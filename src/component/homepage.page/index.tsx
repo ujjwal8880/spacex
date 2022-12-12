@@ -1,4 +1,5 @@
-import React, { FunctionComponent, memo, useEffect } from "react";
+import React, { FunctionComponent, memo, useEffect, useState } from "react";
+import debounce from "lodash.debounce";
 import axios, { AxiosError } from "axios";
 import { useInfiniteQuery } from "react-query";
 import Box from "@mui/material/Box";
@@ -11,14 +12,25 @@ import { API_HOST, landingsFetchQuery } from "../../constants.js";
 
 import "./style.css";
 
-const fetchLandingData = (pageParam: number, limit: number) =>
+const fetchLandingData = (
+  limit: number,
+  pageParam: number,
+  searchQuery: string
+) =>
   axios.post(API_HOST, {
-    query: landingsFetchQuery((pageParam - 1) * limit),
+    query: landingsFetchQuery(),
+    variables: {
+      limit,
+      offset: (pageParam - 1) * limit,
+      missionName: searchQuery,
+    },
   });
 
 const limitPerPage = 10;
 
 const Homepage: FunctionComponent<{}> = () => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
   const {
     data,
     isLoading,
@@ -28,9 +40,12 @@ const Homepage: FunctionComponent<{}> = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isRefetching,
+    refetch,
   } = useInfiniteQuery<any, AxiosError>({
     queryKey: "launches",
-    queryFn: ({ pageParam = 1 }) => fetchLandingData(pageParam, limitPerPage),
+    queryFn: ({ pageParam = 1 }) =>
+      fetchLandingData(limitPerPage, pageParam, searchQuery),
     retry: false,
     getNextPageParam: (lastPage, allPages) => {
       const nextPage = allPages.length + 1;
@@ -49,7 +64,16 @@ const Homepage: FunctionComponent<{}> = () => {
     console.log(id);
   };
 
-  const handleInputChange = (value: string) => {};
+  const handleInputChange = (value: string) => {
+    setSearchQuery(value);
+  };
+
+  useEffect(
+    debounce(() => {
+      refetch();
+    }, 1500),
+    [searchQuery]
+  );
 
   const getLastString = () => {
     if (isFetchingNextPage) {
@@ -98,6 +122,9 @@ const Homepage: FunctionComponent<{}> = () => {
         {!isLoading && <SearchBar handleInputChange={handleInputChange} />}
       </header>
       <div className="content">
+        {(isLoading || isRefetching) && (
+          <div className="last-string">Loading...</div>
+        )}
         {isSuccess && !isLoading && (
           <div className="launch-container">
             <Box
@@ -128,7 +155,6 @@ const Homepage: FunctionComponent<{}> = () => {
             </Box>
           </div>
         )}
-        {isLoading && <div className="last-string">Loading...</div>}
       </div>
       {!isLoading && (
         <ArrowCircleUpIcon
