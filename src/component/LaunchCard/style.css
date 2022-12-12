@@ -1,0 +1,29 @@
+.launch-container {
+    padding-bottom: 50px;
+}
+.launch-card .name {
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.launch-card .name span {
+    font-size: 14px;
+}
+
+.launch-card {
+    overflow: hidden;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+}
+
+.launch-card .player-wrapper > div:first-child { 
+    width: 320px !important;
+    height: 150px !important;
+    top: -7px !important;
+    left: -7px !important;
+    position: relative;
+}

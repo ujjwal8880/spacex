@@ -5,6 +5,7 @@ import {
   RouterProvider,
 } from 'react-router-dom'
 import { QueryClientProvider, QueryClient } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 import HomePage from './component/homepage.page';
 
@@ -22,6 +23,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </QueryClientProvider>
   );
 }

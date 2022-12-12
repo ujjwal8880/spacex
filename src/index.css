@@ -5,6 +5,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: url("http://www.nasa.gov/sites/default/files/thumbnails/image/50097912597_e9be3e0a4f_k.jpg") no-repeat;
+  background-size: auto;
+  background-attachment: fixed;
 }
 
 code {

@@ -2,6 +2,7 @@ export const API_HOST = "https://api.spacex.land/graphql/";
 
 export const landingsFetchQuery = (offSet) => `query {
     launchesPast(limit: 10, offset: ${offSet}) {
+      id
       mission_name
       launch_date_local
       launch_site {
