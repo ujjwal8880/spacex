@@ -12,7 +12,7 @@ type LaunchCardPropsType = {
 };
 
 const LaunchCard: FunctionComponent<LaunchCardPropsType> = ({
-  data,
+  data = [],
   handleCardClick,
 }) => {
   return data.map((launch: any) => (

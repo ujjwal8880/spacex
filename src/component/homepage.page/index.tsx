@@ -47,9 +47,13 @@ const Homepage: FunctionComponent<{}> = () => {
     queryFn: ({ pageParam = 1 }) =>
       fetchLandingData(limitPerPage, pageParam, searchQuery),
     retry: false,
-    getNextPageParam: (lastPage, allPages) => {
+    refetchOnWindowFocus: false,
+    getNextPageParam: (
+      { data: { data: { launchesPast = [] } = {} } = {} },
+      allPages
+    ) => {
       const nextPage = allPages.length + 1;
-      return lastPage.length !== 0 ? nextPage : undefined;
+      return launchesPast.length !== 0 ? nextPage : undefined;
     },
   });
 
@@ -145,13 +149,16 @@ const Homepage: FunctionComponent<{}> = () => {
                 },
               }}
             >
-              {data.pages.map((page, index) => (
-                <LaunchCard
-                  key={index}
-                  data={page.data.data.launchesPast}
-                  handleCardClick={handleCardClick}
-                />
-              ))}
+              {data.pages.map(
+                (page, index) =>
+                  page && (
+                    <LaunchCard
+                      key={index}
+                      data={page.data.data.launchesPast}
+                      handleCardClick={handleCardClick}
+                    />
+                  )
+              )}
             </Box>
           </div>
         )}
