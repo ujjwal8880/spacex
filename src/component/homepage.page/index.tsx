@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 
 import SearchBar from "./../SearchBar";
 import LaunchCard from "./../LaunchCard";
+import Compare from "./../Compare";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 
 import { API_HOST, landingsFetchQuery } from "../../constants.js";
@@ -30,6 +31,7 @@ const limitPerPage = 10;
 
 const Homepage: FunctionComponent<{}> = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const {
     data,
@@ -64,8 +66,14 @@ const Homepage: FunctionComponent<{}> = () => {
     });
   };
 
-  const handleCardClick = (id: number) => {
-    console.log(id);
+  const handleCardClick = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds((ids: string[]) => ids.filter((i: string) => i !== id));
+    } else if (selectedIds.length < 2) {
+      setSelectedIds([...selectedIds, id]);
+    } else {
+      alert("Cannot select more than two Launches to compare");
+    }
   };
 
   const handleInputChange = (value: string) => {
@@ -74,7 +82,7 @@ const Homepage: FunctionComponent<{}> = () => {
 
   useEffect(
     debounce(() => {
-      refetch();
+      !isLoading && refetch();
     }, 1500),
     [searchQuery]
   );
@@ -92,11 +100,8 @@ const Homepage: FunctionComponent<{}> = () => {
   useEffect(() => {
     let fetching = false;
     const handleScroll = async (e: any) => {
-      const {
-        scrollHeight,
-        scrollTop,
-        clientHeight,
-      } = e.target.scrollingElement;
+      const { scrollHeight, scrollTop, clientHeight } =
+        e.target.scrollingElement;
       if (!fetching && scrollHeight - scrollTop <= clientHeight * 1.5) {
         fetching = true;
         if (hasNextPage) await fetchNextPage();
@@ -118,7 +123,7 @@ const Homepage: FunctionComponent<{}> = () => {
       <header>
         SpaceX Lauches
         <span>
-          Created by{" "}
+          Developed by&nbsp;
           <a href="https://www.linkedin.com/in/ujjwalsinghal/">
             Ujjwal Singhal
           </a>
@@ -143,7 +148,7 @@ const Homepage: FunctionComponent<{}> = () => {
                   opacity: 0.8,
                   backgroundColor: "black",
                   borderRadius: 8,
-                  border: "1px solid white",
+                  border: "1px solid",
                   padding: 1,
                   color: "white",
                 },
@@ -156,6 +161,7 @@ const Homepage: FunctionComponent<{}> = () => {
                       key={index}
                       data={page.data.data.launchesPast}
                       handleCardClick={handleCardClick}
+                      selectedIds={selectedIds}
                     />
                   )
               )}
@@ -171,6 +177,7 @@ const Homepage: FunctionComponent<{}> = () => {
         />
       )}
       {!isLoading && <div className="last-string">{getLastString()}</div>}
+      <Compare selectedIds={selectedIds} />
     </div>
   );
 };
