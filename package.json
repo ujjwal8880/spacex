@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.10.16",
     "@mui/material": "^5.10.17",
+    "@vercel/analytics": "^0.1.6",
     "axios": "^1.2.1",
     "lodash.debounce": "^4.0.8",
     "react": "^18.2.0",
@@ -42,7 +43,7 @@
     ]
   },
   "devDependencies": {
-    "@types/react": "^18.0.26",
-    "@types/lodash.debounce": "^4.0.7"
+    "@types/lodash.debounce": "^4.0.7",
+    "@types/react": "^18.0.26"
   }
 }
